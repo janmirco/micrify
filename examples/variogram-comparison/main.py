@@ -22,7 +22,7 @@ ESTIMATION_APPROACH = "numba"  # ["numba", "vectorized", "manual"]
 
 def main() -> None:
     # Set up output dir and logging
-    output_dir = rp.path.set_up()
+    output_dir = rp.path.set_up_output()
     rp.log.set_up(output_dir)
 
     # Log paths
