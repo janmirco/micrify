@@ -1,0 +1,20 @@
+[project]
+name = "variogram-comparison"
+version = "0.1.0"
+description = "Comparison of variogram estimation by Micrify and GSTools"
+readme = "README.md"
+authors = [
+    { name = "Jan Mirco Pfeifer", email = "126580858+janmirco@users.noreply.github.com" }
+]
+license = "MIT"
+requires-python = ">=3.12"
+dependencies = [
+    "micrify",
+]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[tool.uv.sources]
+micrify = { path = "../../", editable = true }
