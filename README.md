@@ -7,7 +7,7 @@ Combined with the [finite element method](https://en.wikipedia.org/wiki/Finite_e
 ## Usage
 
 How to use Micrify can be found in the [examples](examples) directory.
-For example, a comparison of a variogram estimation implementation with the implementation of [GSTools](https://geostat-framework.readthedocs.io/projects/gstools) can be found in this [script](examples/variogram-comparison/main.py).
+For example, a comparison of a variogram estimation implementation with the implementation of [GSTools](https://geostat-framework.readthedocs.io/projects/gstools) can be found [here](examples/variogram-comparison).
 
 ## Installation
 
