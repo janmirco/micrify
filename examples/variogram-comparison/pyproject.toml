@@ -10,6 +10,7 @@ license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
     "micrify",
+    "utly",
 ]
 
 [tool.pyright]
@@ -18,3 +19,4 @@ venv = ".venv"
 
 [tool.uv.sources]
 micrify = { path = "../../", editable = true }
+utly = { git = "https://github.com/janmirco/utly.git" }

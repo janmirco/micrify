@@ -46,7 +46,7 @@ uv add --editable <PATH_TO_HELLO_REPO>
 - Code execution: [GNU Make](https://www.gnu.org/software/make/)
 - Package and project manager: [uv](https://docs.astral.sh/uv/)
 - Python packages:
-    - [Rippl](https://github.com/janmirco/rippl)
+    - [Utly](https://github.com/janmirco/utly)
     - [GSTools](https://geostat-framework.readthedocs.io/projects/gstools)
     - [Matplotlib](https://matplotlib.org/)
     - [Numba](https://numba.pydata.org/)

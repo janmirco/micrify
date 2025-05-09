@@ -5,7 +5,7 @@ import gstools as gs
 import matplotlib.pyplot as plt
 import micrify as mc
 import numpy as np
-import rippl as rp
+import utly
 
 # Set Parameters
 GRID_SIZE = 60
@@ -22,8 +22,8 @@ ESTIMATION_APPROACH = "numba"  # ["numba", "vectorized", "manual"]
 
 def main() -> None:
     # Set up output dir and logging
-    output_dir = rp.path.set_up_output()
-    rp.log.set_up(output_dir)
+    output_dir = utly.path.set_up_output()
+    utly.log.set_up(output_dir)
 
     # Log paths
     logging.info(f"{Path.cwd() = }")
@@ -70,7 +70,7 @@ def main() -> None:
         coords = np.vstack([xx.ravel(), yy.ravel()])  # shape (2, N)
         vals = data.ravel()  # shape (N,)
         logging.info("[GSTools] Start variogram estimation...")
-        with mc.timer.Timer("GSTools") as t1:
+        with utly.timer.Timer("GSTools") as t1:
             lags, semivariogram_vals = gs.vario_estimate(coords, vals, max_dist=MAX_LAG)
         t1.print_time(milli=False)
         logging.info("[GSTools] Done.")
@@ -88,7 +88,7 @@ def main() -> None:
     logging.debug(f"{bin_edges = }")
 
     logging.info("[Micrify] Start variogram estimation...")
-    with mc.timer.Timer("Micrify") as t2:
+    with utly.timer.Timer("Micrify") as t2:
         lags, semivariogram_vals = mc.variogram.semivariogram(
             data,
             num_bins=num_bins,

@@ -13,7 +13,7 @@ dependencies = [
     "matplotlib>=3.10.3",
     "numba>=0.61.2",
     "numpy>=2.2.5",
-    "rippl",
+    "utly",
 ]
 
 [build-system]
@@ -24,4 +24,4 @@ build-backend = "hatchling.build"
 packages = ["micrify"]
 
 [tool.uv.sources]
-rippl = { git = "https://github.com/janmirco/rippl.git" }
+utly = { git = "https://github.com/janmirco/utly.git" }
