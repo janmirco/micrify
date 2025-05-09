@@ -1,7 +1,7 @@
 [project]
 name = "micrify"
 version = "0.1.0"
-description = " A small toolbox for spatial statistics"
+description = "A small toolbox for spatial statistics"
 readme = "README.md"
 authors = [
     { name = "Jan Mirco Pfeifer", email = "126580858+janmirco@users.noreply.github.com" }
