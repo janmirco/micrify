@@ -1,1 +1,1 @@
-from . import variogram
+from . import timer, variogram
