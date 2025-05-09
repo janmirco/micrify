@@ -605,7 +605,7 @@ wheels = [
 [[package]]
 name = "rippl"
 version = "0.1.0"
-source = { git = "https://github.com/janmirco/rippl.git#452cc98e36c2e721601b58ce4eb3b5fe6eae7b1c" }
+source = { git = "https://github.com/janmirco/rippl.git#d115eb261d9a57e1bf75c7ce681f48341a25e828" }
 dependencies = [
     { name = "gmsh" },
     { name = "numpy" },
