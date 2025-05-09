@@ -8,7 +8,7 @@ import numpy as np
 import rippl as rp
 
 # Set Parameters
-GRID_SIZE = 50
+GRID_SIZE = 60
 TOTAL_NUM_DATA_POINTS = GRID_SIZE * GRID_SIZE
 MAX_LAG = GRID_SIZE / 2.0
 MEAN = 1.0
@@ -70,7 +70,9 @@ def main() -> None:
         coords = np.vstack([xx.ravel(), yy.ravel()])  # shape (2, N)
         vals = data.ravel()  # shape (N,)
         logging.info("[GSTools] Start variogram estimation...")
-        lags, semivariogram_vals = gs.vario_estimate(coords, vals, max_dist=MAX_LAG)
+        with mc.timer.Timer("GSTools") as t1:
+            lags, semivariogram_vals = gs.vario_estimate(coords, vals, max_dist=MAX_LAG)
+        t1.print_time(milli=False)
         logging.info("[GSTools] Done.")
         nonzero_mask = semivariogram_vals > 0
         lags = lags[nonzero_mask]
@@ -86,14 +88,18 @@ def main() -> None:
     logging.debug(f"{bin_edges = }")
 
     logging.info("[Micrify] Start variogram estimation...")
-    lags, semivariogram_vals = mc.variogram.semivariogram(
-        data,
-        num_bins=num_bins,
-        max_lag=MAX_LAG,
-        bin_edges=bin_edges,
-        estimation_approach=ESTIMATION_APPROACH,
-    )
+    with mc.timer.Timer("Micrify") as t2:
+        lags, semivariogram_vals = mc.variogram.semivariogram(
+            data,
+            num_bins=num_bins,
+            max_lag=MAX_LAG,
+            bin_edges=bin_edges,
+            estimation_approach=ESTIMATION_APPROACH,
+        )
+    t2.print_time(milli=False)
     logging.info("[Micrify] Done.")
+
+    logging.info(f"Time comparison: GSTools / Micrify = {t1.time / t2.time:.4f}")
 
     axes[0].scatter(lags, semivariogram_vals, color="tab:blue", label="Micrify semivariogram")
     axes[0].plot(lags, data.var() * np.ones_like(lags), linestyle="dashed", color="tab:red", label="Sample variance (sill)")
@@ -110,7 +116,7 @@ def main() -> None:
 
     plt.savefig(output_dir / Path("variogram_comparison.png"))
     plt.savefig(output_dir / Path("variogram_comparison.svg"))
-    plt.show()
+    # plt.show()
 
 
 if __name__ == "__main__":
