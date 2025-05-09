@@ -3,7 +3,7 @@
 In this project, equidistant grids of data points are used.
 For this special purpose, together with [Numba](https://numba.pydata.org/), variogram estimation is even faster than that of [GSTools](https://geostat-framework.readthedocs.io/projects/gstools) when using large enough grids (over ~2500 data points in my tests).
 
-## Examplary study
+## Exemplary study
 
 ### Parameters
 
