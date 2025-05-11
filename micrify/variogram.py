@@ -2,9 +2,16 @@ import logging
 
 import numba
 import numpy as np
+from numpy.typing import NDArray
 
 
-def semivariogram(data, num_bins, max_lag, bin_edges, estimation_approach="numba"):
+def semivariogram(
+    data: NDArray[np.float64],
+    num_bins: int,
+    max_lag: float,
+    bin_edges: NDArray[np.float64],
+    estimation_approach: str = "numba",
+) -> tuple[list[np.float64], list[np.float64]]:
     if estimation_approach == "numba":
         sqdiff_sums, bin_counts = estimate_numba(data, num_bins=num_bins, max_lag=max_lag, bin_edges=bin_edges)
     elif estimation_approach == "vectorized":
@@ -24,7 +31,12 @@ def semivariogram(data, num_bins, max_lag, bin_edges, estimation_approach="numba
     return lags, semivariogram_vals
 
 
-def estimate_manual(data, num_bins, max_lag, bin_edges):
+def estimate_manual(
+    data: NDArray[np.float64],
+    num_bins: int,
+    max_lag: float,
+    bin_edges: NDArray[np.float64],
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     sqdiff_sums = np.zeros(num_bins)
     bin_counts = np.zeros(num_bins)
     for x1 in range(data.shape[0]):
@@ -45,7 +57,12 @@ def estimate_manual(data, num_bins, max_lag, bin_edges):
 
 
 @numba.njit
-def estimate_numba(data, num_bins, max_lag, bin_edges):
+def estimate_numba(
+    data: NDArray[np.float64],
+    num_bins: int,
+    max_lag: float,
+    bin_edges: NDArray[np.float64],
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     sqdiff_sums = np.zeros(num_bins)
     bin_counts = np.zeros(num_bins)
     for x1 in range(data.shape[0]):
@@ -64,7 +81,12 @@ def estimate_numba(data, num_bins, max_lag, bin_edges):
     return sqdiff_sums, bin_counts
 
 
-def estimate_vectorized(data, num_bins, max_lag, bin_edges):
+def estimate_vectorized(
+    data: NDArray[np.float64],
+    num_bins: int,
+    max_lag: float,
+    bin_edges: NDArray[np.float64],
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     num_data_points = data.shape[0] * data.shape[1]
     if num_data_points > 2_500:
         logging.info(f"Warning: Large grid size will fill up your memory! {num_data_points = }. Watch your memory and scale up carefully.")
