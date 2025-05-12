@@ -49,7 +49,7 @@ def estimate_manual(
             for x2 in range(data.shape[0]):
                 for y2 in range(data.shape[1]):
                     if (x1 < x2) or ((x1 == x2) and (y1 < y2)):  # unique pairs, no repeats
-                        lag = np.sqrt(hx * (x2 - x1) ** 2.0 + hy * (y2 - y1) ** 2.0)
+                        lag = np.sqrt((hx * (x2 - x1)) ** 2.0 + (hy * (y2 - y1)) ** 2.0)
                         if (lag < 1.0e-08) or (lag > max_lag):
                             continue
                         bin_idx = np.searchsorted(bin_edges, lag, side="right") - 1
@@ -76,7 +76,7 @@ def estimate_numba(
             for x2 in range(data.shape[0]):
                 for y2 in range(data.shape[1]):
                     if (x1 < x2) or ((x1 == x2) and (y1 < y2)):  # unique pairs, no repeats
-                        lag = np.sqrt(hx * (x2 - x1) ** 2.0 + hy * (y2 - y1) ** 2.0)
+                        lag = np.sqrt((hx * (x2 - x1)) ** 2.0 + (hy * (y2 - y1)) ** 2.0)
                         if (lag < 1.0e-08) or (lag > max_lag):
                             continue
                         bin_idx = np.searchsorted(bin_edges, lag, side="right") - 1
@@ -111,7 +111,7 @@ def estimate_vectorized(
 
     # Pairwise distances
     dcoords = coords[:, None, :] - coords[None, :, :]
-    dists = np.sqrt(hx * (dcoords[:, :, 0] ** 2.0) + hy * (dcoords[:, :, 1] ** 2.0))
+    dists = np.sqrt((hx * dcoords[:, :, 0]) ** 2.0 + (hy * dcoords[:, :, 1]) ** 2.0)
 
     # Select unique pairs (upper triangle, excluding diagonal)
     iu = np.triu_indices(len(vals), k=1)
