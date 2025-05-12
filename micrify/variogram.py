@@ -11,13 +11,15 @@ def semivariogram(
     max_lag: float,
     bin_edges: NDArray[np.float64],
     estimation_approach: str = "numba",
+    hx: float = 1.0,
+    hy: float = 1.0,
 ) -> tuple[list[np.float64], list[np.float64]]:
     if estimation_approach == "numba":
-        sqdiff_sums, bin_counts = estimate_numba(data, num_bins=num_bins, max_lag=max_lag, bin_edges=bin_edges)
+        sqdiff_sums, bin_counts = estimate_numba(data, num_bins=num_bins, max_lag=max_lag, bin_edges=bin_edges, hx=hx, hy=hy)
     elif estimation_approach == "vectorized":
-        sqdiff_sums, bin_counts = estimate_vectorized(data, num_bins=num_bins, max_lag=max_lag, bin_edges=bin_edges)
+        sqdiff_sums, bin_counts = estimate_vectorized(data, num_bins=num_bins, max_lag=max_lag, bin_edges=bin_edges, hx=hx, hy=hy)
     elif estimation_approach == "manual":
-        sqdiff_sums, bin_counts = estimate_manual(data, num_bins=num_bins, max_lag=max_lag, bin_edges=bin_edges)
+        sqdiff_sums, bin_counts = estimate_manual(data, num_bins=num_bins, max_lag=max_lag, bin_edges=bin_edges, hx=hx, hy=hy)
     else:
         raise NotImplementedError(f"Chosen estimation approach is not implemented. {estimation_approach = }. Choose one of ['numba', 'vectorized', 'manual'].")
 
@@ -36,6 +38,8 @@ def estimate_manual(
     num_bins: int,
     max_lag: float,
     bin_edges: NDArray[np.float64],
+    hx: float = 1.0,
+    hy: float = 1.0,
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     sqdiff_sums = np.zeros(num_bins)
     bin_counts = np.zeros(num_bins)
@@ -45,7 +49,7 @@ def estimate_manual(
             for x2 in range(data.shape[0]):
                 for y2 in range(data.shape[1]):
                     if (x1 < x2) or ((x1 == x2) and (y1 < y2)):  # unique pairs, no repeats
-                        lag = np.sqrt((x2 - x1) ** 2.0 + (y2 - y1) ** 2.0)
+                        lag = np.sqrt(hx * (x2 - x1) ** 2.0 + hy * (y2 - y1) ** 2.0)
                         if (lag < 1.0e-08) or (lag > max_lag):
                             continue
                         bin_idx = np.searchsorted(bin_edges, lag, side="right") - 1
@@ -62,6 +66,8 @@ def estimate_numba(
     num_bins: int,
     max_lag: float,
     bin_edges: NDArray[np.float64],
+    hx: float = 1.0,
+    hy: float = 1.0,
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     sqdiff_sums = np.zeros(num_bins)
     bin_counts = np.zeros(num_bins)
@@ -70,7 +76,7 @@ def estimate_numba(
             for x2 in range(data.shape[0]):
                 for y2 in range(data.shape[1]):
                     if (x1 < x2) or ((x1 == x2) and (y1 < y2)):  # unique pairs, no repeats
-                        lag = np.sqrt((x2 - x1) ** 2.0 + (y2 - y1) ** 2.0)
+                        lag = np.sqrt(hx * (x2 - x1) ** 2.0 + hy * (y2 - y1) ** 2.0)
                         if (lag < 1.0e-08) or (lag > max_lag):
                             continue
                         bin_idx = np.searchsorted(bin_edges, lag, side="right") - 1
@@ -86,6 +92,8 @@ def estimate_vectorized(
     num_bins: int,
     max_lag: float,
     bin_edges: NDArray[np.float64],
+    hx: float = 1.0,
+    hy: float = 1.0,
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     num_data_points = data.shape[0] * data.shape[1]
     if num_data_points > 2_500:
@@ -103,7 +111,7 @@ def estimate_vectorized(
 
     # Pairwise distances
     dcoords = coords[:, None, :] - coords[None, :, :]
-    dists = np.sqrt((dcoords**2).sum(axis=2))
+    dists = np.sqrt(hx * (dcoords[:, :, 0] ** 2.0) + hy * (dcoords[:, :, 1] ** 2.0))
 
     # Select unique pairs (upper triangle, excluding diagonal)
     iu = np.triu_indices(len(vals), k=1)
