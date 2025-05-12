@@ -99,7 +99,8 @@ def main() -> None:
     t2.print_time(milli=False)
     logging.info("[Micrify] Done.")
 
-    logging.info(f"Time comparison: GSTools / Micrify = {t1.time / t2.time:.4f}")
+    if GSTOOLS_USED:
+        logging.info(f"Time comparison: GSTools / Micrify = {t1.time / t2.time:.4f}")
 
     axes[0].scatter(lags, semivariogram_vals, color="tab:blue", label="Micrify semivariogram")
     axes[0].plot(lags, data.var() * np.ones_like(lags), linestyle="dashed", color="tab:red", label="Sample variance (sill)")
